@@ -29,3 +29,18 @@ rule cutadapt:
         "logs/cutadapt/{sample}-{unit}.log"
     wrapper:
         "0.17.4/bio/cutadapt/se"
+
+
+rule bbtrim:
+    input:
+        get_fastq
+    output:
+        fastq="bb_trimmed/{sample}-{unit}.fastq.gz"
+    params:
+        extra="ref={} {}".format(','.join(config["trimming"]["contaminant_files"]), config["params"]["bbtrim"])
+        #contaminant_files="{}".format(','.join(config["trimming"]["contaminant_files"])),
+        #extra="ref={} {}".format(contaminant_files, config["params"]["bbtrim"])
+    log:
+        "logs/bbtrim/{sample}-{unit}.log"
+    wrapper:
+        "file:///Users/maryk.thompson/Desktop/Davislab/comp_labbook_backup/data/computational_projects/rateseq_pipelines/rna-quantseq-deseq/wrappers/wrapper_bbtrim"
