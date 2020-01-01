@@ -1,14 +1,13 @@
 def get_fastq(wildcards):
     return units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
 
-
 rule cutadapt_pe:
     input:
         get_fastq
     output:
-        fastq1="trimmed/{sample}-{unit}.1.fastq.gz",
-        fastq2="trimmed/{sample}-{unit}.2.fastq.gz",
-        qc="trimmed/{sample}-{unit}.qc.txt"
+        fastq1="cutadapt_trimmed/{sample}-{unit}.1.fastq.gz",
+        fastq2="cutadapt_trimmed/{sample}-{unit}.2.fastq.gz",
+        qc="cutadapt_trimmed/{sample}-{unit}.qc.txt"
     params:
         "-a {} {}".format(config["trimming"]["adapter"], config["params"]["cutadapt-pe"])
     log:
@@ -21,8 +20,8 @@ rule cutadapt:
     input:
         get_fastq
     output:
-        fastq="trimmed/{sample}-{unit}.fastq.gz",
-        qc="trimmed/{sample}-{unit}.qc.txt"
+        fastq="cutadapt_trimmed/{sample}-{unit}.fastq.gz",
+        qc="cutadapt_trimmed/{sample}-{unit}.qc.txt"
     params:
         "-a {} {}".format(config["trimming"]["adapter"], config["params"]["cutadapt-se"])
     log:
@@ -38,8 +37,6 @@ rule bbtrim:
         fastq="bb_trimmed/{sample}-{unit}.fastq.gz"
     params:
         extra="ref={} {}".format(','.join(config["trimming"]["contaminant_files"]), config["params"]["bbtrim"])
-        #contaminant_files="{}".format(','.join(config["trimming"]["contaminant_files"])),
-        #extra="ref={} {}".format(contaminant_files, config["params"]["bbtrim"])
     log:
         "logs/bbtrim/{sample}-{unit}.log"
     wrapper:

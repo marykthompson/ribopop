@@ -4,7 +4,9 @@ def get_fq(wildcards):
         return units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
     else:
         # yes trimming, use trimmed data
-        trimmed_dir = config["trimming"]["trimmed_dir"]
+        libtype = units.loc[(wildcards.sample, wildcards.unit), "libtype"]
+        trimmed_dir = config["trimming"][libtype]["trimmed_dir"]
+        
         if not is_single_end(**wildcards):
             # paired-end sample
             return expand("{}/{sample}-{unit}.{group}.fastq.gz".format(trimmed_dir),
@@ -13,6 +15,8 @@ def get_fq(wildcards):
         return "{}/{sample}-{unit}.fastq.gz".format(trimmed_dir, **wildcards)
 
 
+#in order to process the quantseq and rna-seq files separately,
+#need to create a list of bb_trimmed/*.fq for the quantseq and cutadapt_trimmed/*.fq for the
 rule align:
     input:
         sample=get_fq

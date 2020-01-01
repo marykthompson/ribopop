@@ -21,8 +21,8 @@ validate(units, schema="schemas/units.schema.yaml")
 
 rule all:
     input:
-        expand("bb_trimmed/{sample}-{unit}.fastq.gz", sample = units["sample"], unit = units["unit"]),
-        expand("star/{sample}-{unit}/Aligned.out.bam", sample = units["sample"], unit = units["unit"]),
+        #expand("bb_trimmed/{sample}-{unit}.fastq.gz", sample = units["sample"], unit = units["unit"]),
+        #expand("star/{sample}-{unit}/Aligned.out.bam", sample = units["sample"], unit = units["unit"]),
         expand(["results/diffexp/{contrast}.diffexp.tsv",
                 "results/diffexp/{contrast}.ma-plot.svg"],
                contrast=config["diffexp"]["contrasts"]),
