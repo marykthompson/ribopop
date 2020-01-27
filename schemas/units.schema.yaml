@@ -8,16 +8,21 @@ properties:
   unit:
     type: string
     description: unit id
+  strandedness:
+    type: string
+    description: one of the values '0', 'yes' or 'reverse' according to protocol strandedness
+  libtype:
+    type: string
+    description: a defined library type, listed in the config file. Determines the type of adaptor trimming.
   fq1:
     type: string
     description: path to FASTQ file
   fq2:
     type: string
     description: path to second FASTQ file (leave empty in case of single-end)
-  strandedness:
-    type: string
-    description: one of the values '0', 'yes' or 'reverse' according to protocol strandedness
 required:
   - sample
   - unit
   - fq1
+  - strandedness
+  - libtype

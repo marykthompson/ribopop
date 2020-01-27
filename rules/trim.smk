@@ -13,8 +13,7 @@ rule cutadapt_pe:
     log:
         "logs/cutadapt/{sample}-{unit}.log"
     wrapper:
-        "0.17.4/bio/cutadapt/pe"
-
+        "0.49.0/bio/cutadapt/pe"
 
 rule cutadapt:
     input:
@@ -27,8 +26,7 @@ rule cutadapt:
     log:
         "logs/cutadapt/{sample}-{unit}.log"
     wrapper:
-        "0.17.4/bio/cutadapt/se"
-
+        "0.49.0/bio/cutadapt/se"
 
 rule bbtrim:
     input:
@@ -40,4 +38,4 @@ rule bbtrim:
     log:
         "logs/bbtrim/{sample}-{unit}.log"
     wrapper:
-        "file:///Users/maryk.thompson/Desktop/Davislab/comp_labbook_backup/data/computational_projects/rateseq_pipelines/rna-quantseq-deseq/wrappers/wrapper_bbtrim"
+        f"file:{snake_dir}/wrappers/wrapper_bbtrim"

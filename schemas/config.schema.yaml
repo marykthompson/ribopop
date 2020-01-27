@@ -17,27 +17,25 @@ properties:
       adapter:
         type: string
         pattern: "^[ACGT]+$"
+      contaminant_files:
+        type: array
 
   ref:
     type: object
     properties:
-      index:
+      star_index:
+        type: string
+      kallisto_index:
+        type: string
+      transcripts_to_genes:
         type: string
       annotation:
         type: string
     required:
-      - index
+      - star_index
+      - kallisto_index
+      - transcripts_to_genes
       - annotation
-
-  pca:
-    type: object
-    properties:
-      labels:
-        type: array
-        items:
-          type: string
-    required:
-      - labels
 
   diffexp:
     type: object
@@ -50,22 +48,30 @@ properties:
   params:
     type: object
     properties:
-      star: 
+      star:
         type: string
       cutadapt-se:
         type: string
       cutadapt-pe:
         type: string
+      bbtrim:
+        type: string
+      kallisto:
+        type: object
+      deseq2:
+        type: object
+        
     required:
       - star
       - cutadapt-se
       - cutadapt-pe
+      - bbtrim
+      - kallisto
 
 required:
   - samples
   - units
   - trimming
   - ref
-  - pca
   - diffexp
   - params

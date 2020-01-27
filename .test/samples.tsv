@@ -1,3 +1,5 @@
 sample	condition
-A	treated
-B	untreated
+inputq	inputq
+inputr	inputr
+subtractedq	subtractedq
+subtractedr	subtractedr

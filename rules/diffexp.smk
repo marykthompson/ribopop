@@ -5,74 +5,42 @@ def get_strandness(units):
         strand_list=["none"]
         return strand_list*units.shape[0]
 
-rule count_matrix:
-    input:
-        expand("star/{unit.sample}-{unit.unit}/ReadsPerGene.out.tab", unit=units.itertuples())
-    output:
-        "counts/all.tsv"
-    params:
-        samples=units["sample"].tolist(),
-        strand=get_strandness(units)
-    conda:
-        "../envs/pandas.yaml"
-    script:
-        "../scripts/count-matrix.py"
-
-
 def get_deseq2_threads(wildcards=None):
     # https://twitter.com/mikelove/status/918770188568363008
     few_coeffs = False if wildcards is None else len(get_contrast(wildcards)) < 10
     return 1 if len(samples) < 100 or few_coeffs else 6
 
-
-rule deseq2_init:
-    input:
-        counts="counts/all.tsv"
-    output:
-        "deseq2/all.rds"
-    params:
-        samples=config["samples"]
-    conda:
-        "../envs/deseq2.yaml"
-    log:
-        "logs/deseq2/init.log"
-    threads: get_deseq2_threads()
-    script:
-        "../scripts/deseq2-init.R"
-
-
-rule pca:
-    input:
-        "deseq2/all.rds"
-    output:
-        report("results/pca.svg", "../report/pca.rst")
-    params:
-        pca_labels=config["pca"]["labels"]
-    conda:
-        "../envs/deseq2.yaml"
-    log:
-        "logs/pca.log"
-    script:
-        "../scripts/plot-pca.R"
-
-
 def get_contrast(wildcards):
     return config["diffexp"]["contrasts"][wildcards.contrast]
 
+def get_exp_files(wildcards, dir_path = '', file_type = 'abundance.h5'):
+    '''
+    Get the quantification files for any specific contrast to run.
+    Append the path given to the front of the returned files.
+    '''
+    contrast_samples = get_contrast(wildcards)
+    units_w_cond = pd.merge(units, samples[['condition']], left_index = True, right_index = True)
+    sample_df = units_w_cond[units_w_cond['condition'].isin(contrast_samples)].copy()
+    sample_df['exp_files'] = sample_df.apply(lambda x: os.path.join(dir_path,'-'.join([x['sample'], x['unit']]),file_type), axis = 1)
+    return sample_df['exp_files'].tolist()
 
-rule deseq2:
+rule kallisto_deseq2:
     input:
-        "deseq2/all.rds"
+        infiles = lambda wildcards: get_exp_files(wildcards, dir_path = 'kallisto')
     output:
-        table=report("results/diffexp/{contrast}.diffexp.tsv", "../report/diffexp.rst"),
-        ma_plot=report("results/diffexp/{contrast}.ma-plot.svg", "../report/ma.rst"),
+        table = report("results/diffexp/{contrast}.diffexp.csv", "../report/diffexp.rst", category = 'Differential Expression'),
+        ma_plot = report("results/diffexp/{contrast}.ma-plot.svg", "../report/ma.rst", category = 'Differential Expression'),
     params:
-        contrast=get_contrast
+        contrast = get_contrast,
+        units_file = config['units'],
+        samples_file = config['samples'],
+        #parameterize the sizefactor estimation so that it can be run small or large dataset
+        sf_method = config['params']['deseq2']['sf_method'],
+        txt_2_gene_file = config['ref']['transcripts_to_genes']
     conda:
         "../envs/deseq2.yaml"
     log:
-        "logs/deseq2/{contrast}.diffexp.log"
+        "logs/kallisto_deseq2/{contrast}.diffexp.log"
     threads: get_deseq2_threads
     script:
-        "../scripts/deseq2.R"
-
+        "../scripts/kallisto_to_deseq2.R"

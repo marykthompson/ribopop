@@ -1,11 +1,14 @@
 import pandas as pd
+import os
 from snakemake.utils import validate, min_version
+
+#need to use workflow.basedir to get the relative directory for the wrappers directive
+snake_dir = workflow.basedir
+
 ##### set minimum snakemake version #####
 min_version("5.1.2")
 
-
 ##### load config and sample sheets #####
-
 configfile: "config.yaml"
 validate(config, schema="schemas/config.schema.yaml")
 
@@ -16,25 +19,20 @@ units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], 
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema="schemas/units.schema.yaml")
 
-
 ##### target rules #####
-
 rule all:
     input:
-        #expand("bb_trimmed/{sample}-{unit}.fastq.gz", sample = units["sample"], unit = units["unit"]),
-        #expand("star/{sample}-{unit}/Aligned.out.bam", sample = units["sample"], unit = units["unit"]),
-        expand(["results/diffexp/{contrast}.diffexp.tsv",
+        expand(["results/diffexp/{contrast}.diffexp.csv",
                 "results/diffexp/{contrast}.ma-plot.svg"],
                contrast=config["diffexp"]["contrasts"]),
-        "results/pca.svg"
-
+        "qc/multiqc_report.html",
+        expand("kallisto/{sample}-{unit}/abundance_by_gene.csv", sample = units["sample"], unit = units["unit"])
 
 ##### setup singularity #####
 
 # this container defines the underlying OS for each job when using the workflow
 # with --use-conda --use-singularity
 singularity: "docker://continuumio/miniconda3"
-
 
 ##### setup report #####
 

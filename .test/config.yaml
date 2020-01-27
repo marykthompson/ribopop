@@ -1,31 +1,60 @@
+# path or URL to sample sheet (TSV format, columns: sample, condition, ...)
 samples: samples.tsv
+# path or URL to sequencing unit sheet (TSV format, columns: sample, unit, fq1, fq2,
+# strandedness). Units are biological replicates. If the column "strandedness" is present (which is optional),
+# can be empty or has one of these values: none, yes or reverse. none is for unstranded
+# protocols, yes an reverse follow the nomenclature used in `htseq-count --reverse`
+# which is referenced in STAR manual section 7, "Counting number of reads per gene".
 units: units.tsv
 
+#Allow trimming and alignment params to be specified by libtype
 trimming:
   # skip trimming: false or true
   skip: false
-  # the sequencing adapter
-  adapter: ACGGATCGATCGATCGATCGAT
+  #contaminant files, currently only used for the Quant-Seq libraries
+  contaminant_files:
+    - "resources/polyA.fa.gz"
+    - "resources/truseq_rna.fa.gz"
+  #NEB ultra directional II adapter sequence.
+  adapter: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+  # Put the Quant-seq and NEB trimmed libraries in different directories
+  # so that they can be specified by different rules
+  quantseq_fwd:
+    trimmed_dir: bb_trimmed
+  neb_dirII:
+    trimmed_dir: cutadapt_trimmed
 
 ref:
   # the STAR index
-  index: "data/ref/index"
+  star_index: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/dmel_sirv_631_v1/star_index_dmel_631-sirvs"
+  # the Kallisto index
+  kallisto_index: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/rpop_test_files/kallisto_index.idx"
+  transcripts_to_genes: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/rpop_test_files/transcripts_to_genes.txt"
   # gtf file with transcripts
-  annotation: "data/ref/annotation.chr21.gtf"
-
-pca:
-  labels:
-    # columns of sample sheet to use for PCA
-    - condition
+  annotation: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/dmel_sirv_631_v1/star_index_dmel_631-sirvs/combined_annotations.gtf"
 
 diffexp:
   # contrasts for the deseq2 results method
+  # q denotes QuantSeq library, r denotes NEB RNA-Seq libraries
   contrasts:
-    treated-vs-untreated:
-      - treated
-      - untreated
-
+    subtractedq-vs-inputq:
+      - subtractedq
+      - inputq
+    subtractedr-vs-inputr:
+      - subtractedr
+      - inputr
+    #subtractedr-vs-inputq:
+    #  - subtractedr
+    #  - inputq
 params:
   star: ""
-  cutadapt-se: ""
+  cutadapt-se: "-m 1"
   cutadapt-pe: ""
+  kallisto:
+    quantseq_fwd: "-l 200 -s 80 --single --fr-stranded"
+    neb_dirII: "-l 240 -s 110 --single --rf-stranded"
+  bbtrim: "k=13 ktrim=r useshortkmers=t mink=5 qtrim=r trimq=10 minlength=20"
+  #sf_method = c("ratio","poscounts", "iterate")
+  #use poscounts for testing with small dataset, otherwise ratio
+  deseq2:
+    sf_method: poscounts
