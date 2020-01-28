@@ -1,4 +1,6 @@
 *
+!report
+!report/*
 !wrappers
 !wrappers/*
 !wrappers/*/*

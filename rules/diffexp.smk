@@ -41,6 +41,6 @@ rule kallisto_deseq2:
         '../envs/deseq2.yaml'
     log:
         'logs/kallisto_deseq2/{contrast}.diffexp.log'
-    threads: get_deseq2_threads
+    threads: 1
     script:
         '../scripts/kallisto_to_deseq2.R'

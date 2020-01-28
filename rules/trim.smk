@@ -34,7 +34,7 @@ rule bbtrim:
     output:
         fastq = 'bb_trimmed/{sample}-{unit}.fastq.gz'
     params:
-        extra = 'ref={} {}'.format(','.join(config['trimming']['contaminant_files']), config['params']['bbtrim'])
+        extra = 'ref={} {}'.format(','.join([os.path.join(snake_dir, i) for i in config['trimming']['contaminant_files']]), config['params']['bbtrim'])
     log:
         'logs/bbtrim/{sample}-{unit}.log'
     wrapper:
