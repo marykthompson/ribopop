@@ -13,8 +13,8 @@ trimming:
   skip: false
   #contaminant files, currently only used for the Quant-Seq libraries
   contaminant_files:
-    - "resources/polyA.fa.gz"
-    - "resources/truseq_rna.fa.gz"
+    - 'resources/polyA.fa.gz'
+    - 'resources/truseq_rna.fa.gz'
   #NEB ultra directional II adapter sequence.
   adapter: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
   # Put the Quant-seq and NEB trimmed libraries in different directories
@@ -26,12 +26,12 @@ trimming:
 
 ref:
   # the STAR index
-  star_index: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/dmel_sirv_631_v1/star_index_dmel_631-sirvs"
+  star_index: '/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/dmel_sirv_631_v1/star_index_dmel_631-sirvs'
   # the Kallisto index
-  kallisto_index: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/rpop_test_files/kallisto_index.idx"
-  transcripts_to_genes: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/rpop_test_files/transcripts_to_genes.txt"
+  kallisto_index: '/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/rpop_test_files/kallisto_index.idx'
+  transcripts_to_genes: '/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/rpop_test_files/transcripts_to_genes.txt'
   # gtf file with transcripts
-  annotation: "/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/dmel_sirv_631_v1/star_index_dmel_631-sirvs/combined_annotations.gtf"
+  annotation: '/Users/maryk.thompson/Desktop/Davislab/OneDriveNexus365/2.25_rRNA_sub_2b/2.25v_pipedev/dmel_sirv_631_v1/star_index_dmel_631-sirvs/combined_annotations.gtf'
 
 diffexp:
   # contrasts for the deseq2 results method
@@ -47,13 +47,13 @@ diffexp:
     #  - subtractedr
     #  - inputq
 params:
-  star: ""
-  cutadapt-se: "-m 1"
-  cutadapt-pe: ""
+  star: ''
+  cutadapt-se: '-m 1'
+  cutadapt-pe: '-m 1'
   kallisto:
-    quantseq_fwd: "-l 200 -s 80 --single --fr-stranded"
-    neb_dirII: "-l 240 -s 110 --single --rf-stranded"
-  bbtrim: "k=13 ktrim=r useshortkmers=t mink=5 qtrim=r trimq=10 minlength=20"
+    quantseq_fwd: '-l 200 -s 80 --single --fr-stranded'
+    neb_dirII: '-l 240 -s 110 --single --rf-stranded'
+  bbtrim: 'k=13 ktrim=r useshortkmers=t mink=5 qtrim=r trimq=10 minlength=20'
   #sf_method = c("ratio","poscounts", "iterate")
   #use poscounts for testing with small dataset, otherwise ratio
   deseq2:

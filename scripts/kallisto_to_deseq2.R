@@ -23,7 +23,7 @@ samples <- read.table(samples_file, sep = '\t', header = TRUE, stringsAsFactors 
 #add the condition data to the units df
 units <- merge(units, samples, by = "sample")
 #add the name of the run, this will match the name in the Kallisto dir
-units$run <- paste(units$sample, units$unit, sep = '-')
+units$run <- paste(units$sample, units$unit, sep = "-")
 #add the replicate number
 units$rep <- sapply(units$unit, function(x) unlist(strsplit(x, "rep"))[2])
 
@@ -35,7 +35,7 @@ t2g <- read.table(txt_2_gene_file, sep = "\t", header = FALSE,
 col.names =  c("target_id", "gene", "symbol"), stringsAsFactors = FALSE)
 t2g$symbol <- NULL
 
-files <- snakemake@input[['infiles']]
+files <- snakemake@input[["infiles"]]
 names(files) <- sapply(files, function(x) unlist(strsplit(x, "/"))[2])
 
 #Subset the data by experment:

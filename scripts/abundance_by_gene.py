@@ -4,7 +4,7 @@
 
 import pandas as pd
 
-txt_2_gene_file = snakemake.params["txt_2_gene_file"]
+txt_2_gene_file = snakemake.params['txt_2_gene_file']
 with open(txt_2_gene_file, 'r') as f:
     txt_2_gene = dict(line.strip().split('\t')[0:2] for line in f)
 
@@ -19,7 +19,7 @@ with open(txt_2_gene_file, 'r') as f:
         else:
             gene_2_symbol[fields[1]] = fields[1]
 
-df = pd.read_csv(snakemake.input["abundance"], sep ='\t')
+df = pd.read_csv(snakemake.input['abundance'], sep ='\t')
 
 #Produce a table of primary and mature tpm from the Kallisto output
 df['intron'] = df['target_id'].apply(lambda x: '-' in x)
@@ -41,4 +41,4 @@ new_df[['symbol', 'summed_tpm', 'summed_est_counts']].to_csv('test_summed.csv')
 
 cols = new_df.columns.tolist()
 cols.insert(0, cols.pop(cols.index('symbol')))
-new_df[cols].to_csv(snakemake.output["gene_table"])
+new_df[cols].to_csv(snakemake.output['gene_table'])
