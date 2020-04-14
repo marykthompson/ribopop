@@ -19,6 +19,7 @@ units = pd.read_table(config['units'], dtype = str).set_index(['sample', 'unit']
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema = 'schemas/units.schema.yaml')
 
+rnaseq_units = units[units['libtype'] == 'neb_dirII'].copy()
 ##### target rules #####
 rule all:
     input:
@@ -27,13 +28,8 @@ rule all:
                contrast=config['diffexp']['contrasts']),
         'qc/multiqc_report.html',
         expand('kallisto/{unit.sample}-{unit.unit}/abundance_by_gene.csv', unit = units.itertuples()),
-        'results/gene_quantification/summary_abundance_by_gene.csv'
-
-##### setup singularity #####
-
-# this container defines the underlying OS for each job when using the workflow
-# with --use-conda --use-singularity
-singularity: 'docker://continuumio/miniconda3'
+        'results/gene_quantification/summary_abundance_by_gene.csv',
+        expand('rrna_coverage/{unit.sample}-{unit.unit}.rrna_bedgraph', unit = rnaseq_units.itertuples())
 
 ##### setup report #####
 

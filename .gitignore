@@ -25,4 +25,6 @@ scripts/.snakemake*
 !.editorconfig
 !.gitattributes
 !.test
-!.test/data
+!.test/*
+*/.DS_Store
+*/*/.DS_Store
