@@ -37,7 +37,6 @@ new_df['symbol'] = pd.Series(gene_2_symbol)
 #call it summed_tpm and summed_est_counts to indicate it's summed over all transcripts and primary, mature
 new_df['summed_tpm'] = new_df['primary_tpm'] + new_df['mature_tpm']
 new_df['summed_est_counts'] = new_df['primary_est_counts'] + new_df['mature_est_counts']
-new_df[['symbol', 'summed_tpm', 'summed_est_counts']].to_csv('test_summed.csv')
 
 cols = new_df.columns.tolist()
 cols.insert(0, cols.pop(cols.index('symbol')))

@@ -85,6 +85,7 @@ rule collate_kallisto:
     script:
         '../scripts/collate_kallisto.py'
 
+#get rDNA region coverage. The locus is on the +ve strand but the NEB libraries map to the opposite strand
 rule make_rrna_bed:
     input:
         'star/{sample}-{unit}/Aligned.out.bam'
@@ -97,6 +98,6 @@ rule make_rrna_bed:
     shell:
         '''
         samtools sort {input} -o {output.sorted_bam}
-        bedtools genomecov -bga -ibam {output.sorted_bam} -strand '+' > {output.genome_bedgraph}
+        bedtools genomecov -bga -ibam {output.sorted_bam} -strand '-' > {output.genome_bedgraph}
         grep 'rDNA' {output.genome_bedgraph} > {output.rrna_bedgraph}
         '''
