@@ -11,13 +11,9 @@ https://github.com/snakemake-workflows/rna-seq-star-deseq2
 
 ## Running the workflow
 
-First install the environment for snakemake:
-
-    conda env create -f envs/snakemake.yaml
-
 Copy the files from .example/ to the output directory.
 
-Then activate the environment and run the pipeline:
+Then run the pipeline:
 
     snakemake --directory <outdir> --use-conda
 
