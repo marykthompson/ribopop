@@ -1,10 +1,13 @@
-#abundance_by_gene
-#collapse the Kallisto transcript quantification to gene quantification
-#calculate totals of primary, mature, and summed tpm and count_est
+'''
+abundance_by_gene.py
+- Collapse the Kallisto transcript quantification to gene quantification.
+- Calculate totals of primary and mature transcripts as summed tpm and summed
+estimated counts.
+'''
 
 import pandas as pd
 
-txt_2_gene_file = snakemake.params['txt_2_gene_file']
+txt_2_gene_file = snakemake.input['txt_2_gene_file']
 with open(txt_2_gene_file, 'r') as f:
     txt_2_gene = dict(line.strip().split('\t')[0:2] for line in f)
 
@@ -13,7 +16,6 @@ with open(txt_2_gene_file, 'r') as f:
     gene_2_symbol = {}
     for line in f:
         fields = line.strip().split('\t')
-        #commented out to see what it would do with an error
         if len(fields) == 3:
             gene_2_symbol[fields[1]] = fields[2]
         else:

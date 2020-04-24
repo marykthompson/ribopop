@@ -29,7 +29,7 @@ units$rep <- sapply(units$unit, function(x) unlist(strsplit(x, "rep"))[2])
 
 this_contrast = snakemake@params[["contrast"]]
 
-txt_2_gene_file = snakemake@params[["txt_2_gene_file"]]
+txt_2_gene_file = snakemake@input[["txt_2_gene_file"]]
 
 t2g <- read.table(txt_2_gene_file, sep = "\t", header = FALSE,
 col.names =  c("target_id", "gene", "symbol"), stringsAsFactors = FALSE)

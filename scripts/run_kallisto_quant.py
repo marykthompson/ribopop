@@ -1,8 +1,11 @@
-__author__ = 'Mary Thompson'
-__copyright__ = 'Copyright 2020, Mary Thompson'
-__email__ = 'mary.thompson@bioch.ox.ac.uk'
-__license__ = 'MIT'
-#Modified by MKT from wrapper repo to use pre-built kallisto index
+'''
+run_kallisto.py
+Run kallisto quant.
+
+From the snakemake wrappers repo. Author: Joël Simoneau
+https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/kallisto/quant.html
+'''
+
 from snakemake.shell import shell
 
 # Creating log
@@ -20,7 +23,7 @@ shell(
     'kallisto quant '
     '{extra} '  # Optional parameters
     '--threads={snakemake.threads} '  # Number of threads
-    '--index={snakemake.params.index} '  # Input file
+    '--index={snakemake.input.kallisto_index} '  # Input file
     '--output-dir={snakemake.params.outdir} '  # Output directory
     '{fastq} '  # Input FASTQ files
     '{log}'  # Logging

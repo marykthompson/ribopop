@@ -28,25 +28,27 @@ def get_program_params(wildcards, program = ''):
 #need to create a list of bb_trimmed/*.fq for the quantseq and cutadapt_trimmed/*.fq
 rule align:
     input:
-        sample=get_fq
+        sample = get_fq,
+        star_index = 'indices/star_index_{index_name}'.format(index_name = config['index_name'])
     output:
         'star/{sample}-{unit}/Aligned.out.bam',
         'star/{sample}-{unit}/ReadsPerGene.out.tab'
     log:
         'logs/star/{sample}-{unit}.log'
     params:
-        # path to STAR reference genome index
-        index=config['ref']['star_index'],
         # optional parameters
         extra='--quantMode GeneCounts --sjdbGTFfile {} {}'.format(
-              config['ref']['annotation'], config['params']['star'])
+              'indices/combo_files/{}.gtf'.format(config['index_name']), config['params']['star'])
     threads: 24
-    wrapper:
-        f'file:{snake_dir}/wrappers/wrapper_star'
+    conda:
+        '../envs/main.yaml'
+    script:
+        '../scripts/run_star.py'
 
 rule quantify_kallisto:
     input:
-        fastq = get_fq
+        fastq = get_fq,
+        kallisto_index = 'indices/kallisto_index/{}.idx'.format(config['index_name'])
     output:
         'kallisto/{sample}-{unit}/abundance.h5',
         'kallisto/{sample}-{unit}/abundance.tsv',
@@ -54,22 +56,22 @@ rule quantify_kallisto:
     log:
         'logs/kallisto/{sample}-{unit}.log'
     params:
-        index = config['ref']['kallisto_index'],
         outdir = 'kallisto/{sample}-{unit}',
         extra = lambda wildcards: get_program_params(wildcards, program = 'kallisto')
     threads: 1
-    wrapper:
-        f'file:{snake_dir}/wrappers/wrapper_kallisto'
+    conda:
+        '../envs/main.yaml'
+    script:
+        '../scripts/run_kallisto_quant.py'
 
 rule summarize_kallisto:
     input:
-        abundance = 'kallisto/{sample}-{unit}/abundance.tsv'
+        abundance = 'kallisto/{sample}-{unit}/abundance.tsv',
+        txt_2_gene_file = 'indices/combo_files/{}_txt2gene.txt'.format(config['index_name'])
     output:
         gene_table = 'kallisto/{sample}-{unit}/abundance_by_gene.csv'
-    params:
-        txt_2_gene_file = config['ref']['transcripts_to_genes']
     conda:
-        '../envs/pandas.yaml'
+        '../envs/main.yaml'
     script:
         '../scripts/abundance_by_gene.py'
 
@@ -81,7 +83,7 @@ rule collate_kallisto:
     params:
         units_file = config['units']
     conda:
-        '../envs/pandas.yaml'
+        '../envs/main.yaml'
     script:
         '../scripts/collate_kallisto.py'
 
@@ -94,7 +96,7 @@ rule make_rrna_bed:
         genome_bedgraph = temp('rrna_coverage/{sample}-{unit}.genome_bedgraph'),
         rrna_bedgraph = 'rrna_coverage/{sample}-{unit}.rrna_bedgraph'
     conda:
-        '../envs/bedgraph.yaml'
+        '../envs/main.yaml'
     shell:
         '''
         samtools sort {input} -o {output.sorted_bam}

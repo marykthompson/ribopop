@@ -1,12 +1,15 @@
-#collate kallisto
-#collect the abundance_by_gene values and output in a .csv
+'''
+collate_kallisto.py
+- Collect the abundance_by_gene values for all experiments and output in a .csv
+'''
 
 import pandas as pd
 from collections import defaultdict
 
 units_file = snakemake.params['units_file']
 units = pd.read_table(units_file, dtype=str).set_index(['sample', 'unit'], drop=False)
-units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
+# enforce str in index
+units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])
 
 exps = units.index.levels[0]
 reps = units.index.levels[1]

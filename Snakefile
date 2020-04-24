@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from snakemake.utils import validate, min_version
 
-#need to use workflow.basedir to get the relative directory for the wrappers directive
+#need to use workflow.basedir to get the relative directory
 snake_dir = workflow.basedir
 
 ##### set minimum snakemake version #####
@@ -20,9 +20,12 @@ units.index = units.index.set_levels([i.astype(str) for i in units.index.levels]
 validate(units, schema = 'schemas/units.schema.yaml')
 
 rnaseq_units = units[units['libtype'] == 'neb_dirII'].copy()
+
 ##### target rules #####
 rule all:
     input:
+        'indices/star_index_{index_name}'.format(index_name = config['index_name']),
+        'indices/kallisto_index/{}.idx'.format(config['index_name']),
         expand(['results/diffexp/{contrast}.diffexp.csv',
                 'results/diffexp/{contrast}.ma-plot.svg'],
                contrast=config['diffexp']['contrasts']),
@@ -32,12 +35,11 @@ rule all:
         expand('rrna_coverage/{unit.sample}-{unit.unit}.rrna_bedgraph', unit = rnaseq_units.itertuples())
 
 ##### setup report #####
-
 report: 'report/workflow.rst'
 
-
 ##### load rules #####
-
+include: 'rules/prepare_seqs.smk'
+include: 'rules/build_indices.smk'
 include: 'rules/common.smk'
 include: 'rules/trim.smk'
 include: 'rules/align.smk'

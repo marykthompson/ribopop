@@ -20,23 +20,6 @@ properties:
       contaminant_files:
         type: array
 
-  ref:
-    type: object
-    properties:
-      star_index:
-        type: string
-      kallisto_index:
-        type: string
-      transcripts_to_genes:
-        type: string
-      annotation:
-        type: string
-    required:
-      - star_index
-      - kallisto_index
-      - transcripts_to_genes
-      - annotation
-
   diffexp:
     type: object
     properties:
@@ -60,7 +43,7 @@ properties:
         type: object
       deseq2:
         type: object
-        
+
     required:
       - star
       - cutadapt-se
@@ -72,6 +55,5 @@ required:
   - samples
   - units
   - trimming
-  - ref
   - diffexp
   - params

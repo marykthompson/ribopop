@@ -26,7 +26,8 @@ def get_exp_files(wildcards, dir_path = '', file_type = 'abundance.h5'):
 
 rule kallisto_deseq2:
     input:
-        infiles = lambda wildcards: get_exp_files(wildcards, dir_path = 'kallisto')
+        infiles = lambda wildcards: get_exp_files(wildcards, dir_path = 'kallisto'),
+        txt_2_gene_file = 'indices/combo_files/{}_txt2gene.txt'.format(config['index_name'])
     output:
         table = report('results/diffexp/{contrast}.diffexp.csv', '../report/diffexp.rst', category = 'Differential Expression'),
         ma_plot = report('results/diffexp/{contrast}.ma-plot.svg', '../report/ma.rst', category = 'Differential Expression'),
@@ -35,8 +36,7 @@ rule kallisto_deseq2:
         units_file = config['units'],
         samples_file = config['samples'],
         #parameterize the sizefactor estimation so that it can be run small or large dataset
-        sf_method = config['params']['deseq2']['sf_method'],
-        txt_2_gene_file = config['ref']['transcripts_to_genes']
+        sf_method = config['params']['deseq2']['sf_method']
     conda:
         '../envs/deseq2.yaml'
     log:

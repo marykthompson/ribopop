@@ -37,5 +37,7 @@ rule bbtrim:
         extra = 'ref={} {}'.format(','.join([os.path.join(snake_dir, i) for i in config['trimming']['contaminant_files']]), config['params']['bbtrim'])
     log:
         'logs/bbtrim/{sample}-{unit}.log'
-    wrapper:
-        f'file:{snake_dir}/wrappers/wrapper_bbtrim'
+    conda:
+        '../envs/main.yaml'
+    script:
+        '../scripts/run_bbtrim.py'

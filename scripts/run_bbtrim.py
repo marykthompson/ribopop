@@ -1,7 +1,7 @@
-__author__ = 'Mary Thompson'
-__copyright__ = 'Copyright 2020, Mary Thompson'
-__email__ = 'mary.thompson@bioch.ox.ac.uk'
-__license__ = 'MIT'
+'''
+run_bbtrim.py
+Use bbduk to trim adapters and poly(A) from Quant-Seq reads as recommended by Lexogen.
+'''
 
 import os
 from snakemake.shell import shell

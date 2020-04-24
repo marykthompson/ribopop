@@ -2,14 +2,14 @@
 
 rule rseqc_gtf2bed:
     input:
-        config['ref']['annotation']
+        'indices/combo_files/{}.gtf'.format(config['index_name'])
     output:
         bed = 'qc/rseqc/annotation.bed',
         db = temp('qc/rseqc/annotation.db')
     log:
         'logs/rseqc_gtf2bed.log'
     conda:
-        '../envs/gffutils.yaml'
+        '../envs/main.yaml'
     script:
         '../scripts/gtf2bed.py'
 
@@ -27,7 +27,7 @@ rule rseqc_junction_annotation:
         extra = r'-q 255',  # STAR uses 255 as a score for unique mappers
         prefix= 'qc/rseqc/{sample}-{unit}.junctionanno'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'junction_annotation.py {params.extra} -i {input.bam} -r {input.bed} -o {params.prefix} '
         '> {log[0]} 2>&1'
@@ -46,7 +46,7 @@ rule rseqc_junction_saturation:
         extra = r'-q 255',
         prefix = 'qc/rseqc/{sample}-{unit}.junctionsat'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'junction_saturation.py {params.extra} -i {input.bam} -r {input.bed} -o {params.prefix} '
         '> {log} 2>&1'
@@ -61,7 +61,7 @@ rule rseqc_stat:
     log:
         'logs/rseqc/rseqc_stat/{sample}-{unit}.log'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'bam_stat.py -i {input} > {output} 2> {log}'
 
@@ -76,7 +76,7 @@ rule rseqc_infer:
     log:
         'logs/rseqc/rseqc_infer/{sample}-{unit}.log'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'infer_experiment.py -r {input.bed} -i {input.bam} > {output} 2> {log}'
 
@@ -93,7 +93,7 @@ rule rseqc_innerdis:
     params:
         prefix = 'qc/rseqc/{sample}-{unit}.inner_distance_freq'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'inner_distance.py -r {input.bed} -i {input.bam} -o {params.prefix} > {log} 2>&1'
 
@@ -108,7 +108,7 @@ rule rseqc_readdis:
     log:
         'logs/rseqc/rseqc_readdis/{sample}-{unit}.log'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'read_distribution.py -r {input.bed} -i {input.bam} > {output} 2> {log}'
 
@@ -124,7 +124,7 @@ rule rseqc_readdup:
     params:
         prefix = 'qc/rseqc/{sample}-{unit}.readdup'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'read_duplication.py -i {input} -o {params.prefix} > {log} 2>&1'
 
@@ -140,7 +140,7 @@ rule rseqc_readgc:
     params:
         prefix = 'qc/rseqc/{sample}-{unit}.readgc'
     conda:
-        '../envs/rseqc.yaml'
+        '../envs/main.yaml'
     shell:
         'read_GC.py -i {input} -o {params.prefix} > {log} 2>&1'
 

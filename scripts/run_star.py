@@ -1,8 +1,11 @@
-__author__ = 'Mary Thompson'
-__copyright__ = 'Copyright 2020, Mary Thompson'
-__email__ = 'mary.thompson@bioch.ox.ac.uk'
-__license__ = 'MIT'
-#Modified by MKT to use the gunzip -c command for readfiles
+'''
+run_star.py
+Run STAR alignment.
+
+From the snakemake wrappers repo. Author: Johannes Köster
+https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/star/align.html
+Modified to used the gunzip -c command to read in gzipped files.
+'''
 
 import os
 from snakemake.shell import shell
@@ -28,7 +31,7 @@ shell(
     'STAR '
     '{snakemake.params.extra} '
     '--runThreadN {snakemake.threads} '
-    '--genomeDir {snakemake.params.index} '
+    '--genomeDir {snakemake.input.star_index} '
     '--readFilesIn {snakemake.input.sample} '
     '{readcmd} '
     '--outSAMtype BAM Unsorted '
