@@ -9,6 +9,18 @@ and subjected to QC analysis with RSeQC.
 The following repository was used as an initial template:
 https://github.com/snakemake-workflows/rna-seq-star-deseq2
 
+## Running the workflow
+
+First install the environment for snakemake:
+
+    conda env create -f envs/snakemake.yaml
+
+Copy the files from .example/ to the output directory.
+
+Then activate the environment and run the pipeline:
+
+    snakemake --directory <outdir> --use-conda
+
 ## Authors
 
 * Mary Kay Thompson (@marykthompson)

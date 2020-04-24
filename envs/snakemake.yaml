@@ -1,0 +1,7 @@
+name: run_pipe
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - snakemake=5.8.1
+  - pandas=0.25.3
