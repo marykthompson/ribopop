@@ -44,3 +44,23 @@ rule kallisto_deseq2:
     threads: 1
     script:
         '../scripts/kallisto_to_deseq2.R'
+
+rule htseq_deseq2:
+    input:
+        infiles = lambda wildcards: get_exp_files(wildcards, dir_path = 'htseq', file_type = 'htseq_count.txt')
+    output:
+        table = report('results/diffexp_htseq/{contrast}.diffexp.csv', '../report/diffexp.rst', category = 'Differential Expression'),
+        ma_plot = report('results/diffexp_htseq/{contrast}.ma-plot.svg', '../report/ma.rst', category = 'Differential Expression'),
+    params:
+        contrast = get_contrast,
+        units_file = config['units'],
+        samples_file = config['samples'],
+        #parameterize the sizefactor estimation so that it can be run small or large dataset
+        sf_method = config['params']['deseq2']['sf_method']
+    conda:
+        '../envs/deseq2.yaml'
+    log:
+        'logs/htseq_deseq2/{contrast}.diffexp.log'
+    threads: 1
+    script:
+        '../scripts/htseq_to_deseq2.R'

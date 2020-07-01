@@ -87,6 +87,20 @@ rule collate_kallisto:
     script:
         '../scripts/collate_kallisto.py'
 
+rule htseq_count:
+    input:
+        'star/{sample}-{unit}/Aligned.out.bam'
+    output:
+        'htseq/{sample}-{unit}/htseq_count.txt'
+    params:
+        combo_gtf = 'indices/combo_files/{}.gtf'.format(config['index_name'])
+    conda:
+        '../envs/main.yaml'
+    log:
+        'logs/htseq/{sample}-{unit}.log'
+    shell:
+        'htseq-count {input} {params.combo_gtf} > {output}'
+
 #get rDNA region coverage. The locus is on the +ve strand but the NEB libraries map to the opposite strand
 rule make_rrna_bed:
     input:

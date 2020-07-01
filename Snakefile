@@ -20,6 +20,7 @@ units.index = units.index.set_levels([i.astype(str) for i in units.index.levels]
 validate(units, schema = 'schemas/units.schema.yaml')
 
 rnaseq_units = units[units['libtype'] == 'neb_dirII'].copy()
+quantseq_units = units[units['libtype'] == 'quantseq_fwd'].copy()
 
 ##### target rules #####
 rule all:
@@ -32,6 +33,10 @@ rule all:
         'qc/multiqc_report.html',
         expand('kallisto/{unit.sample}-{unit.unit}/abundance_by_gene.csv', unit = units.itertuples()),
         'results/gene_quantification/summary_abundance_by_gene.csv',
+        expand('htseq/{unit.sample}-{unit.unit}/htseq_count.txt', unit = units.itertuples()),
+        expand(['results/diffexp_htseq/{contrast}.diffexp.csv',
+                'results/diffexp_htseq/{contrast}.ma-plot.svg'],
+               contrast=config['diffexp']['contrasts']),
         expand('rrna_coverage/{unit.sample}-{unit.unit}.rrna_bedgraph', unit = rnaseq_units.itertuples())
 
 ##### setup report #####
