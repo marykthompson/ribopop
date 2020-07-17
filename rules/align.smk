@@ -101,6 +101,18 @@ rule htseq_count:
     shell:
         'htseq-count {input} {params.combo_gtf} > {output}'
 
+rule collate_htseq:
+    input:
+        infiles = expand('htseq/{unit.sample}-{unit.unit}/htseq_count.txt', unit=units.itertuples())
+    output:
+        gene_table = report('results/gene_quantification/summary_abundance_by_gene_htseq.csv', '../report/gene_quantification_htseq.rst', category = 'Gene Quantification')
+    params:
+        units_file = config['units']
+    conda:
+        '../envs/main.yaml'
+    script:
+        '../scripts/collate_htseq.py'
+
 #get rDNA region coverage. The locus is on the +ve strand but the NEB libraries map to the opposite strand
 rule make_rrna_bed:
     input:

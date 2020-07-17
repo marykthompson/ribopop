@@ -27,12 +27,10 @@ rule all:
     input:
         'indices/star_index_{index_name}'.format(index_name = config['index_name']),
         'indices/kallisto_index/{}.idx'.format(config['index_name']),
-        expand(['results/diffexp/{contrast}.diffexp.csv',
-                'results/diffexp/{contrast}.ma-plot.svg'],
-               contrast=config['diffexp']['contrasts']),
         'qc/multiqc_report.html',
         expand('kallisto/{unit.sample}-{unit.unit}/abundance_by_gene.csv', unit = units.itertuples()),
         'results/gene_quantification/summary_abundance_by_gene.csv',
+        'results/gene_quantification/summary_abundance_by_gene_htseq.csv',
         expand('htseq/{unit.sample}-{unit.unit}/htseq_count.txt', unit = units.itertuples()),
         expand(['results/diffexp_htseq/{contrast}.diffexp.csv',
                 'results/diffexp_htseq/{contrast}.ma-plot.svg'],

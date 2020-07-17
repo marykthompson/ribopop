@@ -24,27 +24,6 @@ def get_exp_files(wildcards, dir_path = '', file_type = 'abundance.h5'):
     sample_df['exp_files'] = sample_df.apply(lambda x: os.path.join(dir_path,'-'.join([x['sample'], x['unit']]),file_type), axis = 1)
     return sample_df['exp_files'].tolist()
 
-rule kallisto_deseq2:
-    input:
-        infiles = lambda wildcards: get_exp_files(wildcards, dir_path = 'kallisto'),
-        txt_2_gene_file = 'indices/combo_files/{}_txt2gene.txt'.format(config['index_name'])
-    output:
-        table = report('results/diffexp/{contrast}.diffexp.csv', '../report/diffexp.rst', category = 'Differential Expression'),
-        ma_plot = report('results/diffexp/{contrast}.ma-plot.svg', '../report/ma.rst', category = 'Differential Expression'),
-    params:
-        contrast = get_contrast,
-        units_file = config['units'],
-        samples_file = config['samples'],
-        #parameterize the sizefactor estimation so that it can be run small or large dataset
-        sf_method = config['params']['deseq2']['sf_method']
-    conda:
-        '../envs/deseq2.yaml'
-    log:
-        'logs/kallisto_deseq2/{contrast}.diffexp.log'
-    threads: 1
-    script:
-        '../scripts/kallisto_to_deseq2.R'
-
 rule htseq_deseq2:
     input:
         infiles = lambda wildcards: get_exp_files(wildcards, dir_path = 'htseq', file_type = 'htseq_count.txt')
