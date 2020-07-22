@@ -79,7 +79,7 @@ rule collate_kallisto:
     input:
         infiles = expand('kallisto/{unit.sample}-{unit.unit}/abundance_by_gene.csv', unit=units.itertuples())
     output:
-        gene_table = report('results/gene_quantification/summary_abundance_by_gene.csv', '../report/gene_quantification.rst', category = 'Gene Quantification')
+        gene_table = report('results/gene_quantification/summary_abundance_by_gene_kallisto.csv', '../report/gene_quantification_kallisto.rst', category = 'Gene Quantification')
     params:
         units_file = config['units']
     conda:
@@ -103,7 +103,8 @@ rule htseq_count:
 
 rule collate_htseq:
     input:
-        infiles = expand('htseq/{unit.sample}-{unit.unit}/htseq_count.txt', unit=units.itertuples())
+        infiles = expand('htseq/{unit.sample}-{unit.unit}/htseq_count.txt', unit=units.itertuples()),
+        txt_2_gene_file = 'indices/combo_files/{}_txt2gene.txt'.format(config['index_name'])
     output:
         gene_table = report('results/gene_quantification/summary_abundance_by_gene_htseq.csv', '../report/gene_quantification_htseq.rst', category = 'Gene Quantification')
     params:
